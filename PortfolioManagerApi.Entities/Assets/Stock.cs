@@ -1,4 +1,4 @@
-﻿namespace portfolio_manager_api.Models
+﻿namespace PortfolioManagerApi.Entities.Assets
 {
     public class Stock
     {

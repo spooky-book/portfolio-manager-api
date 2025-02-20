@@ -5,7 +5,7 @@ using portfolio_manager_api_dtos;
 namespace portfolio_manager_api.Controllers
 {
     [ApiController]
-    [Route("portfolio")]
+    [Route("portfolios")]
     [Produces("application/json")]
     public class PortfolioController : ControllerBase
     {
@@ -17,10 +17,9 @@ namespace portfolio_manager_api.Controllers
         }
 
         [HttpGet]
-        public IActionResult ViewPortfolios()
+        public async Task<IActionResult> ViewAllPortfolios()
         {
-            _portfolioService.Test();
-            return Ok("testing what is going to happen meme");
+            return Ok(await _portfolioService.GetAllPortfolios());
         }
 
         [HttpGet("{portfolioId}")]
@@ -30,9 +29,14 @@ namespace portfolio_manager_api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateSinglePortfolio([FromBody] CreateSinglePortfolioRequest request)
+        public async Task<IActionResult> CreateSinglePortfolio([FromBody] CreateSinglePortfolioRequest request)
         {
-            return Ok(request);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var portfolio = await _portfolioService.CreatePortfolio(request.Name, request.Description);
+            return Ok(portfolio);
         }
     }
 }

@@ -2,7 +2,8 @@
 {
     public class CreateSinglePortfolioRequest
     {
-        public string PortfolioName { get; set; }
-        public string PortfolioType { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Type { get; set; }
     }
 }

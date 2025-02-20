@@ -1,6 +1,6 @@
-
 using portfolio_manager_api.Services;
 using PortfolioManagerApi.Proxy;
+using PortfolioManagerApi.Repository;
 
 namespace portfolio_manager_api
 {
@@ -17,7 +17,11 @@ namespace portfolio_manager_api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
             builder.Services.AddScoped<IPortfolioService, PortfolioService>();
+            builder.Services.AddScoped<IPortfolioContextService, PortfolioContextService>();
+            builder.Services.AddDbContext<PortfolioContext>();
 
             builder.Services.AddHttpClient<IStockDataProxy, StockDataProxy>(config =>
             {
@@ -31,6 +35,16 @@ namespace portfolio_manager_api
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
+            }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                var context = services.GetRequiredService<PortfolioContext>();
+                context.Database.EnsureCreated();
             }
 
             app.UseHttpsRedirection();

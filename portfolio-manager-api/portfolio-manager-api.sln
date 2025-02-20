@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioManagerApi.Dtos", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioManagerApi.Proxy", "..\PortfolioManagerApi.Proxy\PortfolioManagerApi.Proxy.csproj", "{26B68C34-8002-492C-930E-DB71E6240442}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioManagerApi.Repository", "..\PortfolioManagerApi.Repository\PortfolioManagerApi.Repository.csproj", "{F3078090-AFC0-4334-B3C6-D2D21265A669}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioManagerApi.Entities", "..\PortfolioManagerApi.Entities\PortfolioManagerApi.Entities.csproj", "{AA16788B-8C48-4A5D-A51B-DC824E871B61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{26B68C34-8002-492C-930E-DB71E6240442}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26B68C34-8002-492C-930E-DB71E6240442}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26B68C34-8002-492C-930E-DB71E6240442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3078090-AFC0-4334-B3C6-D2D21265A669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3078090-AFC0-4334-B3C6-D2D21265A669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3078090-AFC0-4334-B3C6-D2D21265A669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3078090-AFC0-4334-B3C6-D2D21265A669}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA16788B-8C48-4A5D-A51B-DC824E871B61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA16788B-8C48-4A5D-A51B-DC824E871B61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA16788B-8C48-4A5D-A51B-DC824E871B61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA16788B-8C48-4A5D-A51B-DC824E871B61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

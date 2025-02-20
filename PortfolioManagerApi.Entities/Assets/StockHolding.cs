@@ -1,4 +1,6 @@
-﻿namespace portfolio_manager_api.Models
+﻿using PortfolioManagerApi.Entities.Assets;
+
+namespace portfolio_manager_api.Models
 {
     public class StockHolding : HoldableAsset
     {
