@@ -10,7 +10,7 @@ namespace portfolio_manager_api.Services
     {
         Task<List<Portfolio>> GetAllPortfolios();
         Task<Portfolio> CreatePortfolio(string name, string description = "");
-        void AddAssetToPortolio(string portfolioId, HoldableAsset asset);
+        Task<HoldableAsset> AddAssetToPortolio(string portfolioId, HoldableAsset asset);
         void AddStockToPortfolio(string portfolioId, StockHolding stockHolding);
     }
 
@@ -23,9 +23,25 @@ namespace portfolio_manager_api.Services
             _portfolioContext = portfolioContext;
         }
 
-        public void AddAssetToPortolio(string portfolioId, HoldableAsset asset)
+        public async Task<HoldableAsset> AddAssetToPortolio(string portfolioId, HoldableAsset asset)
         {
-            throw new NotImplementedException();
+            var guid = new Guid(portfolioId);
+            Portfolio portfolio;
+            try
+            {
+                portfolio = await _portfolioContext.Portfolios.Include(x => x.Assets).FirstAsync(x => x.Id.Equals(guid));
+            }
+            catch (Exception e)
+            {
+                // log
+                throw;
+            }
+
+            portfolio.Assets.Add(asset);
+
+            await _portfolioContext.SaveChangesAsync();
+
+            return asset;
         }
 
         public void AddStockToPortfolio(string portfolioId, StockHolding stockHolding)
@@ -46,7 +62,7 @@ namespace portfolio_manager_api.Services
 
         public async Task<List<Portfolio>> GetAllPortfolios()
         {
-            return await _portfolioContext.Portfolios.ToListAsync();
+            return await _portfolioContext.Portfolios.Include(x => x.Assets).ToListAsync();
         }
     }
 }

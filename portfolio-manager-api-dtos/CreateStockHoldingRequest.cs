@@ -1,12 +1,19 @@
-﻿using PortfolioManagerApi.Entities.Assets;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace portfolio_manager_api.Models
+namespace portfolio_manager_api_dtos
 {
-    public class StockHolding : HoldableAsset
+    public class CreateStockHoldingRequest
     {
-        //public Stock Stock { get; set; }
+        [Required]
+        public string Ticker { get; set; }
 
+        [Required]
+        public int Quantity { get; set; }
+
+        [Required]
         public DateTimeOffset AcquisitionDateTime { get; set; }
+
+        [Required]
         public double AcquisitionPrice { get; set; }
 
         public bool IsDisposed { get; set; }

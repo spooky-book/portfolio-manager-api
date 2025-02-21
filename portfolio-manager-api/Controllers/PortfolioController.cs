@@ -38,5 +38,18 @@ namespace portfolio_manager_api.Controllers
             var portfolio = await _portfolioService.CreatePortfolio(request.Name, request.Description);
             return Ok(portfolio);
         }
+
+        [HttpPost("{portfolioId}/stock")]
+        public async Task<IActionResult> CreateStockHolding(string portfolioId, [FromBody] CreateStockHoldingRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var stockHolding = await _portfolioService.CreateStock(portfolioId, request);
+
+            return Ok(stockHolding);
+        }
     }
 }
