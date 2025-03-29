@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using portfolio_manager_api.Models;
 using PortfolioManagerApi.Entities;
 using PortfolioManagerApi.Entities.Assets;
+using PortfolioManagerApi.Entities.Assets.Stocks;
 using PortfolioManagerApi.Repository;
 
 namespace portfolio_manager_api.Services
@@ -11,7 +11,9 @@ namespace portfolio_manager_api.Services
         Task<List<Portfolio>> GetAllPortfolios();
         Task<Portfolio> CreatePortfolio(string name, string description = "");
         Task<HoldableAsset> AddAssetToPortolio(string portfolioId, HoldableAsset asset);
-        void AddStockToPortfolio(string portfolioId, StockHolding stockHolding);
+        void AddStockTransactionToPortfolio(string portfolioId, StockHolding stockHolding);
+        Task<Portfolio> GetSinglePortfolio(string portfolioId);
+        Task SavePortfolioContext();
     }
 
     public class PortfolioContextService : IPortfolioContextService
@@ -44,7 +46,7 @@ namespace portfolio_manager_api.Services
             return asset;
         }
 
-        public void AddStockToPortfolio(string portfolioId, StockHolding stockHolding)
+        public void AddStockTransactionToPortfolio(string portfolioId, StockHolding stockHolding)
         {
             throw new NotImplementedException();
         }
@@ -62,7 +64,21 @@ namespace portfolio_manager_api.Services
 
         public async Task<List<Portfolio>> GetAllPortfolios()
         {
-            return await _portfolioContext.Portfolios.Include(x => x.Assets).ToListAsync();
+            return await _portfolioContext.Portfolios
+                .Include(x => x.Assets)
+                .ToListAsync();
+        }
+
+        public async Task<Portfolio> GetSinglePortfolio(string portfolioId)
+        {
+            return await _portfolioContext.Portfolios
+                .Include(x => x.Assets)
+                .FirstAsync(x => x.Id.Equals(new Guid(portfolioId)));
+        }
+
+        public async Task SavePortfolioContext()
+        {
+            await _portfolioContext.SaveChangesAsync();
         }
     }
 }

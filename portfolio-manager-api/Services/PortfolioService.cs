@@ -1,6 +1,6 @@
-﻿using portfolio_manager_api.Models;
-using portfolio_manager_api_dtos;
+﻿using portfolio_manager_api_dtos;
 using PortfolioManagerApi.Entities;
+using PortfolioManagerApi.Entities.Assets.Stocks;
 using PortfolioManagerApi.Proxy;
 
 namespace portfolio_manager_api.Services
@@ -9,7 +9,8 @@ namespace portfolio_manager_api.Services
     {
         Task<List<Portfolio>> GetAllPortfolios();
         Task<Guid> CreatePortfolio(string name, string description);
-        Task<Guid> CreateStock(string portfolioId, CreateStockHoldingRequest request);
+        Task<Guid> CreateStockTransaction(string portfolioId, CreateStockTransactionRequest request);
+        Task<StockHolding> GetStockHolding(string portfolioId, string stockTicker);
     }
 
     public class PortfolioService : IPortfolioService
@@ -30,27 +31,55 @@ namespace portfolio_manager_api.Services
             return portfolio.Id;
         }
 
-        public async Task<Guid> CreateStock(string portfolioId, CreateStockHoldingRequest request)
+        // THE NEXT THING TO DO SHOULD BE TO IMPLEMENT A GET FUNCTIONALITY FOR A SPEICIFC STOCK HOLDING IN A PORTFOLIO
+        // SHOULD RETURN ALL THE AGGREGATED DETAILS OF THAT STOCK HOLDING
+
+        // tHE NEXT THING THAT SHOULD BE DONE IS INTEGRATE THE PRICING OF THE STOCKS INTO THIS, SO CONNECTING WITH THE OTHER API 
+
+        public async Task<Guid> CreateStockTransaction(string portfolioId, CreateStockTransactionRequest request)
         {
-            var stock = new StockHolding
+            var portfolio = await _portfolioContextService.GetSinglePortfolio(portfolioId);
+            var stockHolding = portfolio.Assets.OfType<StockHolding>().FirstOrDefault(x => x.Symbol.Equals(request.Ticker, StringComparison.OrdinalIgnoreCase));
+            if (stockHolding is null)
             {
-                Symbol = request.Ticker,
-                Quantity = request.Quantity,
+                stockHolding = new StockHolding
+                {
+                    Symbol = request.Ticker
+                };
+
+                portfolio.Assets.Add(stockHolding);
+            }
+
+            var transaction = new StockTransaction
+            {
+                AcquisitionBrokerageFee = request.AcquisitionBrokerageFee,
                 AcquisitionDateTime = request.AcquisitionDateTime,
-                AcquisitionPrice = request.AcquisitionPrice,
-                IsDisposed = request.IsDisposed,
+                AcquisitionUnitPrice = request.AcquisitionUnitPrice,
+                TotalAcquisitionPrice = request.AcquisitionUnitPrice * request.AcquiredQuantity + request.AcquisitionBrokerageFee,
                 DisposalDateTime = request.DisposalDateTime,
-                DisposalPrice = request.DisposalPrice
+                DisposalPrice = request.DisposalPrice,
+                IsDisposed = request.IsDisposed,
             };
 
-            var createdStock = await _portfolioContextService.AddAssetToPortolio(portfolioId, stock);
+            stockHolding.AddTransaction(transaction);
 
-            return createdStock.Id;
+            await _portfolioContextService.SavePortfolioContext();
+
+            return transaction.Id;
         }
 
         public async Task<List<Portfolio>> GetAllPortfolios()
         {
             return await _portfolioContextService.GetAllPortfolios();
+        }
+
+        public async Task<StockHolding> GetStockHolding(string portfolioId, string stockTicker)
+        {
+            var portfolio = await _portfolioContextService.GetSinglePortfolio(portfolioId) ?? throw new Exception();
+
+            var stockHolding = portfolio.Assets.OfType<StockHolding>().FirstOrDefault(x => x.Symbol.Equals(stockTicker, StringComparison.OrdinalIgnoreCase)) ?? throw new Exception();
+
+            return stockHolding;
         }
     }
 }

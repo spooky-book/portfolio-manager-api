@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using portfolio_manager_api.Models;
 using PortfolioManagerApi.Entities;
 using PortfolioManagerApi.Entities.Assets;
+using PortfolioManagerApi.Entities.Assets.Stocks;
 
 namespace PortfolioManagerApi.Repository
 {
@@ -9,6 +9,7 @@ namespace PortfolioManagerApi.Repository
     {
         public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<HoldableAsset> Assets { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         public string DbPath;
 
@@ -29,6 +30,7 @@ namespace PortfolioManagerApi.Repository
         {
             modelBuilder.Entity<Portfolio>()
                 .ToTable("Portfolios");
+
             modelBuilder.Entity<HoldableAsset>()
                 .ToTable("Assets")
                 .HasOne(a => a.Portfolio)
@@ -37,6 +39,12 @@ namespace PortfolioManagerApi.Repository
             modelBuilder.Entity<HoldableAsset>()
                 .HasDiscriminator<string>("AssetType")
                 .HasValue<StockHolding>("Stock");
+
+            modelBuilder.Entity<Transaction>()
+                .ToTable("Transactions");
+            modelBuilder.Entity<Transaction>()
+                .HasDiscriminator<string>("TransactionType")
+                .HasValue<StockTransaction>("Stock");
         }
 
         // The following configures EF to create a Sqlite database file in the

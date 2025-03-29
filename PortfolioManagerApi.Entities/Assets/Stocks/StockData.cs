@@ -1,6 +1,6 @@
-﻿namespace PortfolioManagerApi.Entities.Assets
+﻿namespace PortfolioManagerApi.Entities.Assets.Stocks
 {
-    public class Stock
+    public class StockData
     {
         public string Name { get; set; }
         public string Ticker { get; set; }

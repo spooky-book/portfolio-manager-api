@@ -40,14 +40,27 @@ namespace portfolio_manager_api.Controllers
         }
 
         [HttpPost("{portfolioId}/stock")]
-        public async Task<IActionResult> CreateStockHolding(string portfolioId, [FromBody] CreateStockHoldingRequest request)
+        public async Task<IActionResult> CreateStockTransaction(string portfolioId, [FromBody] CreateStockTransactionRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var stockHolding = await _portfolioService.CreateStock(portfolioId, request);
+            var stockHolding = await _portfolioService.CreateStockTransaction(portfolioId, request);
+
+            return Ok(stockHolding);
+        }
+
+        [HttpGet("{portfolioId}/stock/{stockTicker}")]
+        public async Task<IActionResult> CreateStockTransaction(string portfolioId, string stockTicker)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var stockHolding = await _portfolioService.GetStockHolding(portfolioId, stockTicker);
 
             return Ok(stockHolding);
         }
